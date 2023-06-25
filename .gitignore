@@ -2,3 +2,4 @@
 gateway/target
 gateway-client/target
 protos/gen
+db

@@ -54,10 +54,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .to_socket_addrs()?
         .next()
         .expect("Port number is potentially invalid. Unable to create SocketAddr");
-    let transfer_initiation_service = AssetTransferService::default();
+
+    let asset_transfer_service = AssetTransferService {
+      config_lock: RwLock::new(settings.clone()),
+    };
 
     Server::builder()
-        .add_service(AssetTransferServer::new(transfer_initiation_service))
+        .add_service(AssetTransferServer::new(asset_transfer_service))
         .serve(address).await?;
     Ok(())
 }
