@@ -35,7 +35,7 @@ static_resources:
                     typed_config:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.grpc_json_transcoder.v3.GrpcJsonTranscoder
                       proto_descriptor: "./descriptor_set.pb"
-                      services: ["gateway.Gateway"]
+                      services: ["gateway.AssetTransfer"]
                       match_incoming_request_route: false
                       ignore_unknown_query_parameters: true
                       auto_mapping: false
@@ -66,4 +66,4 @@ static_resources:
                   address:
                     socket_address:
                       address: 127.0.0.1
-                      port_value: 5000
+                      port_value: 5001

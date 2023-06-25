@@ -5,8 +5,8 @@ option go_package = "satp/gateway";
 
 import "google/api/annotations.proto";
 
-// definitions of all messages used in the transfer initiation stage
-service Gateway {
+// definitions of all messages used in the gateway
+service AssetTransfer {
   // the requesting gateway sends an InitiateTransfer request to the remote gateway 
   rpc TransferInitiation(InitializationRequest) returns (InitializationResponse) {
     option (google.api.http) = { post: "/initiateTransfer" };

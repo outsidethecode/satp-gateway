@@ -1,0 +1,26 @@
+name = "Dummy_Gateway2"
+port="5002"
+hostname="localhost"
+db_path="db/Dummy_Gateway2/requests"
+# max retries opening sled db if it is locked
+db_open_max_retries=500
+# retry back off time in ms if sled db is locked
+db_open_retry_backoff_msec=10
+
+# Networks map is used to identity the network behind the gateway
+# by its network name so the request can be routed to the right driver
+[networks]
+[networks.Dummy_Network]
+network="Dummy"
+
+# Location of the remote gateways
+[gateways]
+[gateways.Dummay_Gateway]
+hostname="localhost"
+port="5001"
+
+# host and port of the driver identified by networks map
+[drivers]
+[drivers.Dummy]
+hostname="localhost"
+port="6001"

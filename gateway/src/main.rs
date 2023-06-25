@@ -1,39 +1,63 @@
-use tonic::{transport::Server, Request, Response, Status};
-use gateway::{InitializationRequest, InitializationResponse, gateway_server::{Gateway, GatewayServer}};
+// Internal generated modules
+use gateway::{ asset_transfer_server::{ AssetTransferServer } };
+
+// Internal modules
+use services::asset_transfer_service::AssetTransferService;
+
+// External modules
+use config;
+use std::env;
+use std::net::SocketAddr;
+use std::net::ToSocketAddrs;
+use tokio::sync::RwLock;
+use tonic::{ transport::Server };
 
 pub mod gateway {
-  tonic::include_proto!("gateway");
+    tonic::include_proto!("gateway");
 }
 
-#[derive(Debug, Default)]
-pub struct GatewayService {}
-
-#[tonic::async_trait]
-impl Gateway for GatewayService {
-  async fn transfer_initiation(&self, request: Request<InitializationRequest>) -> Result<Response<InitializationResponse>, Status> {
-    let r = request.into_inner();
-    match r.version.as_str() {
-      "1" => Ok(Response::new(gateway::InitializationResponse {
-        version: "version1".to_string(),
-        message_type: "message_type1".to_string(),
-        session_id: "session_id1".to_string(),
-        transfer_context_id: "transfer_context_id1".to_string(),
-        hash_transfer_init_claims: "hash_transfer_init_claims1".to_string(),
-        timestamp: "timestamp1".to_string()
-      })), 
-      _ => Err(Status::new(tonic::Code::OutOfRange, "Invalid version provided"))
-    }
-  }
-}
+mod db;
+mod services;
+mod error;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-  let address = "127.0.0.1:5000".parse().unwrap();
-  let transfer_initiation_service = GatewayService::default();
+    let mut settings = config::Config::default();
+    // Either get config path from environment variable or uses default.
+    let config_file_name = env::var("GATEWAY_CONFIG").unwrap_or_else(|_| {
+        println!("Using default config `config/Settings`");
+        "config/Settings".to_string()
+    });
 
-  Server::builder().add_service(GatewayServer::new(transfer_initiation_service))
-    .serve(address)
-    .await?;
-  Ok(())
+    settings
+        .merge(config::File::with_name(&config_file_name))
+        .unwrap()
+        // Add in settings from the environment (with a prefix of Gateway) Can be used to override config file settings
+        .merge(config::Environment::with_prefix("GATEWAY"))
+        .unwrap();
+
+    let gateway_name = settings.get_str("name").expect("No Gateway name provided");
+    println!("Gateway Name: {:?}", gateway_name);
+    let gateway_port = settings
+        .get_str("port")
+        .expect(
+            &format!(
+                "Port does not exist for gateway name {}. Make sure the config file <{}> has the name and port specified.",
+                gateway_name,
+                config_file_name.to_string()
+            )
+        );
+    let host = settings.get_str("hostname").unwrap_or("localhost".to_string());
+
+    // Converts port to a valid socket address
+    let address: SocketAddr = format!("{}:{}", host, gateway_port)
+        .to_socket_addrs()?
+        .next()
+        .expect("Port number is potentially invalid. Unable to create SocketAddr");
+    let transfer_initiation_service = AssetTransferService::default();
+
+    Server::builder()
+        .add_service(AssetTransferServer::new(transfer_initiation_service))
+        .serve(address).await?;
+    Ok(())
 }
-
