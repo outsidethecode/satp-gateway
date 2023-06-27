@@ -2,7 +2,7 @@
 name = "satp_protos_rs"
 version = "0.1.0"
 edition = "2018"
-authors = ["Zakwan Jaroucheh <zakwanj@gmail.com>"]
+authors = ["Zakwan Jaroucheh <outsidethecode@gmail.com>"]
 license = "Apache-2.0"
 description = "Rust compiled SATP protobuf package"
 documentation = "https://github.com/outsidethecode/satp-gateway"
