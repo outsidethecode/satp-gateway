@@ -1,5 +1,5 @@
 // Internal generated modules
-use gateway::{ asset_transfer_server::{ AssetTransferServer } };
+use satp::gateway::assettransfer::asset_transfer_server::AssetTransferServer;
 
 // Internal modules
 use services::asset_transfer_service::AssetTransferService;
@@ -11,10 +11,6 @@ use std::net::SocketAddr;
 use std::net::ToSocketAddrs;
 use tokio::sync::RwLock;
 use tonic::{ transport::Server };
-
-pub mod gateway {
-    tonic::include_proto!("gateway");
-}
 
 mod db;
 mod services;

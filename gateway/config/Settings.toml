@@ -15,12 +15,16 @@ network="Dummy"
 
 # Location of the remote gateways
 [gateways]
-[gateways.Dummay_Gateway2]
+[gateways.Dummy_Gateway2]
 hostname="localhost"
 port="5002"
+tls=false
+tlsca_cert_path=""
 
 # host and port of the driver identified by networks map
 [drivers]
-[drivers.Dummy2]
+[drivers.Dummy]
 hostname="localhost"
 port="6002"
+tls=false
+tlsca_cert_path=""

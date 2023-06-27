@@ -6,7 +6,6 @@ pub enum Error {
     LoadError(std::io::Error),
     BincodeError(bincode::Error),
     Simple(String),
-    GetQuery(String),
     TransportError(tonic::transport::Error),
     StatusError(tonic::Status),
     SledError(sled::Error),
