@@ -1,0 +1,17 @@
+[package]
+name = "build-protos-rs"
+version = "0.0.1"
+edition = "2018"
+
+[lib]
+name = "satppb"
+path = "pkg/src/lib.rs"
+
+[dependencies]
+tonic = {version="0.8.3",  features = ["tls"]}
+prost = "0.11.8"
+tokio = { version = "1.27", features = ["macros", "fs"] }
+serde = {version="1.0.159", features = ["derive"]}
+
+[build-dependencies]
+tonic-build = "0.8.4"
